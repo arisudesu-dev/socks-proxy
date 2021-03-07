@@ -24,6 +24,9 @@ func main() {
 	}
 
 	socsk5conf := &socks5.Config{
+		Rules: &socks5.PermitCommand{
+			EnableConnect: true,
+		},
 		Logger: log.New(os.Stdout, "", log.LstdFlags),
 	}
 
