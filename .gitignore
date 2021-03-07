@@ -1,0 +1,12 @@
+# build output
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# IDEA / Goland
+.idea/
+*.iml
