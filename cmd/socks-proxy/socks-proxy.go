@@ -2,7 +2,10 @@ package main
 
 import (
 	"log"
+	"net"
 	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/armon/go-socks5"
 	"github.com/caarlos0/env"
@@ -37,8 +40,30 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("Start listening proxy service on port %s\n", config.Port)
-	if err := server.ListenAndServe("tcp", ":"+config.Port); err != nil {
+	log.Printf("Start listening on port %s", config.Port)
+
+	listener, err := net.Listen("tcp", ":"+config.Port)
+	if err != nil {
 		log.Fatal(err)
 	}
+	defer listener.Close()
+
+	errCh := make(chan error)
+	sigCh := make(chan os.Signal)
+
+	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
+
+	log.Printf("Start accepting proxy connections")
+	go func() {
+		errCh <- server.Serve(listener)
+	}()
+
+	select {
+	case err := <-errCh:
+		log.Fatalf("Server error, terminating: %+v", err)
+	case sig := <-sigCh:
+		log.Printf("Normal shutdown by signal: %+v", sig)
+	}
+
+	os.Exit(0)
 }
