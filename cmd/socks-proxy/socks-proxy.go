@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"net"
 	"os"
@@ -49,24 +50,32 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer listener.Close()
 
-	errCh := make(chan error)
+	brkCh := make(chan struct{})
 	sigCh := make(chan os.Signal)
-
 	signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 
 	log.Printf("Start accepting proxy connections")
 	go func() {
-		errCh <- server.Serve(listener)
+		log.Printf("Signal received: %+v", <-sigCh)
+		_ = listener.Close()
+		close(brkCh)
 	}()
 
-	select {
-	case err := <-errCh:
+	if err := server.Serve(listener); !IsErrNetClosing(err) {
 		log.Fatalf("Server error, terminating: %+v", err)
-	case sig := <-sigCh:
-		log.Printf("Normal shutdown by signal: %+v", sig)
 	}
 
+	log.Printf("Waiting for server shutdown...")
+	<-brkCh
 	os.Exit(0)
+}
+
+func IsErrNetClosing(err error) bool {
+	var ErrNetClosing = errors.New("use of closed network connection")
+
+	if e, ok := err.(*net.OpError); ok {
+		return e.Err.Error() == ErrNetClosing.Error()
+	}
+	return false
 }
