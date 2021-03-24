@@ -6,16 +6,20 @@ import (
 	"net"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/armon/go-socks5"
 	"github.com/caarlos0/env"
+
+	"socks-proxy/rules"
 )
 
 var config struct {
-	User     string `env:"PROXY_USER"     envDefault:""`
-	Password string `env:"PROXY_PASSWORD" envDefault:""`
-	Port     string `env:"PROXY_PORT"     envDefault:"1080"`
+	User          string `env:"PROXY_USER"            envDefault:""`
+	Password      string `env:"PROXY_PASSWORD"        envDefault:""`
+	Port          string `env:"PROXY_PORT"            envDefault:"1080"`
+	BlockDestNets string `env:"PROXY_BLOCK_DEST_NETS" envDefault:""`
 }
 
 func main() {
@@ -24,9 +28,26 @@ func main() {
 		log.Fatal(err)
 	}
 
+	blockedNets := []net.IPNet{}
+	blockedNetsStr := strings.Split(config.BlockDestNets, ",")
+
+	for _, netStr := range blockedNetsStr {
+		if netStr == "" {
+			continue
+		}
+		_, ipnet, err := net.ParseCIDR(netStr)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		log.Println("Blocking dest net: " + ipnet.String())
+		blockedNets = append(blockedNets, *ipnet)
+	}
+
 	socsk5conf := &socks5.Config{
-		Rules: &socks5.PermitCommand{
-			EnableConnect: true,
+		Rules: &rules.All{
+			&socks5.PermitCommand{EnableConnect: true},
+			&rules.BlockDestNets{Nets: blockedNets},
 		},
 		Logger: log.New(os.Stdout, "", log.LstdFlags),
 	}
