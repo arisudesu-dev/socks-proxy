@@ -4,7 +4,7 @@ Simple socks5 proxy server with authentication and subnet restrictions.
 
 ## Config
 
-Configuration is done with env variables.
+Configuration is done with environment variables.
 
 | Variable | Default | Description |
 | -------- | ------- | ----------- |
