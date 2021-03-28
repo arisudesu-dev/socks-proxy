@@ -22,5 +22,5 @@ jobs:
       - uses: docker/build-push-action@v2
         with:
           context: .
-          tags: ghcr.io/arisudesu/socks-proxy:latest
+          tags: ghcr.io/arisudesu-dev/socks-proxy:latest
           push: true
