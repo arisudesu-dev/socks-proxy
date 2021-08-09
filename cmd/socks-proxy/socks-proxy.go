@@ -44,7 +44,7 @@ func main() {
 		blockedNets = append(blockedNets, *ipnet)
 	}
 
-	socsk5conf := &socks5.Config{
+	socks5conf := &socks5.Config{
 		Rules: &rules.All{
 			&socks5.PermitCommand{EnableConnect: true},
 			&rules.BlockDestNets{Nets: blockedNets},
@@ -57,10 +57,10 @@ func main() {
 			config.User: config.Password,
 		}
 		cator := socks5.UserPassAuthenticator{Credentials: creds}
-		socsk5conf.AuthMethods = []socks5.Authenticator{cator}
+		socks5conf.AuthMethods = []socks5.Authenticator{cator}
 	}
 
-	server, err := socks5.New(socsk5conf)
+	server, err := socks5.New(socks5conf)
 	if err != nil {
 		log.Fatal(err)
 	}
