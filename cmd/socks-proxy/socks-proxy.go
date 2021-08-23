@@ -6,20 +6,19 @@ import (
 	"net"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 
-	"github.com/caarlos0/env"
+	"github.com/caarlos0/env/v6"
 
 	"socks-proxy/rules"
 	"socks-proxy/socks5"
 )
 
 var config struct {
-	User          string `env:"PROXY_USER"            envDefault:""`
-	Password      string `env:"PROXY_PASSWORD"        envDefault:""`
-	Port          string `env:"PROXY_PORT"            envDefault:"1080"`
-	BlockDestNets string `env:"PROXY_BLOCK_DEST_NETS" envDefault:""`
+	User          string   `env:"PROXY_USER"`
+	Password      string   `env:"PROXY_PASSWORD"`
+	Port          string   `env:"PROXY_PORT"            envDefault:"1080"`
+	BlockDestNets []string `env:"PROXY_BLOCK_DEST_NETS" envSeparator:","`
 }
 
 func main() {
@@ -28,10 +27,8 @@ func main() {
 		log.Fatal(err)
 	}
 
-	blockedNets := []net.IPNet{}
-	blockedNetsStr := strings.Split(config.BlockDestNets, ",")
-
-	for _, netStr := range blockedNetsStr {
+	var blockedNets []net.IPNet
+	for _, netStr := range config.BlockDestNets {
 		if netStr == "" {
 			continue
 		}
