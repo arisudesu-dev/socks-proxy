@@ -3,7 +3,8 @@ package rules
 import (
 	"net"
 
-	"github.com/armon/go-socks5"
+	"socks-proxy/socks5"
+
 	"golang.org/x/net/context"
 )
 

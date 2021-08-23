@@ -9,10 +9,10 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/armon/go-socks5"
 	"github.com/caarlos0/env"
 
 	"socks-proxy/rules"
+	"socks-proxy/socks5"
 )
 
 var config struct {
