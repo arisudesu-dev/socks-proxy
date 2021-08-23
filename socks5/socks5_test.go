@@ -64,7 +64,7 @@ func TestSOCKS5_Connect(t *testing.T) {
 		t.Fatalf("err: %v", err)
 	}
 
-	// Connect, auth and connec to local
+	// Connect, auth and connect to local
 	req := bytes.NewBuffer(nil)
 	req.Write([]byte{5})
 	req.Write([]byte{2, NoAuth, UserPassAuth})

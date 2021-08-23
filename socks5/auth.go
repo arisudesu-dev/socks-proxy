@@ -15,8 +15,8 @@ const (
 )
 
 var (
-	UserAuthFailed  = fmt.Errorf("User authentication failed")
-	NoSupportedAuth = fmt.Errorf("No supported authentication mechanism")
+	UserAuthFailed  = fmt.Errorf("user authentication failed")
+	NoSupportedAuth = fmt.Errorf("no supported authentication mechanism")
 )
 
 // A Request encapsulates authentication state provided
@@ -71,10 +71,10 @@ func (a UserPassAuthenticator) Authenticate(reader io.Reader, writer io.Writer) 
 
 	// Ensure we are compatible
 	if header[0] != userAuthVersion {
-		return nil, fmt.Errorf("Unsupported auth version: %v", header[0])
+		return nil, fmt.Errorf("unsupported auth version: %v", header[0])
 	}
 
-	// Get the user name
+	// Get the username
 	userLen := int(header[1])
 	user := make([]byte, userLen)
 	if _, err := io.ReadAtLeast(reader, user, userLen); err != nil {
@@ -114,7 +114,7 @@ func (s *Server) authenticate(conn io.Writer, bufConn io.Reader) (*AuthContext, 
 	// Get the methods
 	methods, err := readMethods(bufConn)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to get auth methods: %v", err)
+		return nil, fmt.Errorf("failed to get auth methods: %v", err)
 	}
 
 	// Select a usable method
