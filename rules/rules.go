@@ -1,11 +1,10 @@
 package rules
 
 import (
+	"context"
 	"net"
 
 	"socks-proxy/socks5"
-
-	"golang.org/x/net/context"
 )
 
 type All []socks5.RuleSet
