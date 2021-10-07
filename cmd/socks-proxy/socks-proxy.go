@@ -10,8 +10,8 @@ import (
 
 	"github.com/caarlos0/env/v6"
 
-	"socks-proxy/rules"
-	"socks-proxy/socks5"
+	"github.com/arisudesu-dev/socks-proxy/rules"
+	"github.com/arisudesu-dev/socks-proxy/socks5"
 )
 
 var config struct {

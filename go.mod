@@ -1,4 +1,4 @@
-module socks-proxy
+module github.com/arisudesu-dev/socks-proxy
 
 go 1.17
 

@@ -3,7 +3,7 @@ WORKDIR /app
 COPY go.mod go.sum /app/
 RUN go mod download
 COPY . /app/
-RUN CGO_ENABLED=0 go build -o socks-proxy socks-proxy/cmd/socks-proxy
+RUN CGO_ENABLED=0 go build -o socks-proxy ./cmd/socks-proxy
 
 FROM scratch
 WORKDIR /app

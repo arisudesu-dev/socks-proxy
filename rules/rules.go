@@ -4,7 +4,7 @@ import (
 	"context"
 	"net"
 
-	"socks-proxy/socks5"
+	"github.com/arisudesu-dev/socks-proxy/socks5"
 )
 
 type All []socks5.RuleSet
