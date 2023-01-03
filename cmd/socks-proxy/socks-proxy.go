@@ -14,14 +14,22 @@ import (
 	"github.com/arisudesu-dev/socks-proxy/socks5"
 )
 
-var config struct {
-	User          string   `env:"PROXY_USER"`
-	Password      string   `env:"PROXY_PASSWORD"`
-	Port          string   `env:"PROXY_PORT"            envDefault:"1080"`
+type config struct {
+	Addr string `env:"PROXY_ADDR" envDefault:"0.0.0.0"`
+	Port string `env:"PROXY_PORT" envDefault:"1080"`
+
+	User     string `env:"PROXY_USER"`
+	Password string `env:"PROXY_PASSWORD"`
+
 	BlockDestNets []string `env:"PROXY_BLOCK_DEST_NETS" envSeparator:","`
 }
 
+func (c config) ListenAddr() string {
+	return net.JoinHostPort(c.Addr, c.Port)
+}
+
 func main() {
+	var config config
 	err := env.Parse(&config)
 	if err != nil {
 		log.Fatal(err)
@@ -62,9 +70,9 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("Start listening on port %s", config.Port)
+	log.Printf("Start listening on %s", config.ListenAddr())
 
-	listener, err := net.Listen("tcp", ":"+config.Port)
+	listener, err := net.Listen("tcp", config.ListenAddr())
 	if err != nil {
 		log.Fatal(err)
 	}
