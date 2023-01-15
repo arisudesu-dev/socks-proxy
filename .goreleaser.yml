@@ -1,0 +1,22 @@
+builds:
+  - binary: socks-proxy
+  
+    main: ./cmd/socks-proxy/socks-proxy.go
+    env:
+      - CGO_ENABLED=0
+    flags:
+      - -trimpath
+    ldflags:
+      - -s -w
+
+    goos:
+      - linux
+    goarch:
+      - amd64
+
+archives:
+  - name_template: '{{ .ProjectName }}_v{{ .Version }}_{{ .Os }}_{{  .Arch }}'
+    format: tar.gz
+    format_overrides:
+    - goos: windows
+      format: zip
